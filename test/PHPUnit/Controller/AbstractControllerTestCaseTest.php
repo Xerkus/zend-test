@@ -50,7 +50,7 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
         return rmdir($dir);
     }
 
-    protected function setUpCompat()
+    protected function setUp()
     {
         $this->traceErrorCache = $this->traceError;
         $this->tearDownCacheDir();
@@ -58,14 +58,14 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
         $this->setApplicationConfig(
             include __DIR__ . '/../../_files/application.config.php'
         );
-        parent::setUpCompat();
+        parent::setUp();
     }
 
-    protected function tearDownCompat()
+    protected function tearDown()
     {
         $this->traceError = $this->traceErrorCache;
         $this->tearDownCacheDir();
-        parent::tearDownCompat();
+        parent::tearDown();
     }
 
     public function testModuleCacheIsDisabled()
@@ -107,13 +107,13 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
         $this->assertTrue(Console::isConsole(), '3. Console::isConsole returned false after tearDown');
 
         Console::overrideIsConsole(false);
-        parent::setUpCompat();
+        parent::setUp();
 
         $this->assertFalse(Console::isConsole(), '4. Console::isConsole returned true after parent::setUp');
         $this->getApplication();
         $this->assertFalse(Console::isConsole(), '5. Console::isConsole returned true after retrieving application');
 
-        parent::tearDownCompat();
+        parent::tearDown();
 
         $this->assertFalse(Console::isConsole(), '6. Console.isConsole returned true after parent::tearDown');
     }
@@ -169,9 +169,9 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
 
         $this->assertTrue($caught, 'Did not catch expected exception!');
 
-        $this->assertContainsCompat('actual module name is "baz"', $message);
-        $this->assertContainsCompat("Exception 'RuntimeException' with message 'Expected exception message'", $message);
-        $this->assertContainsCompat(__FILE__, $message);
+        $this->assertContains('actual module name is "baz"', $message);
+        $this->assertContains("Exception 'RuntimeException' with message 'Expected exception message'", $message);
+        $this->assertContains(__FILE__, $message);
     }
 
     public function testAssertExceptionDetailsNotPresentWhenTraceErrorIsDisabled()
@@ -193,12 +193,9 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
 
         $this->assertTrue($caught, 'Did not catch expected exception!');
 
-        $this->assertContainsCompat('actual module name is "baz"', $message);
-        $this->assertNotContainsCompat(
-            "Exception 'RuntimeException' with message 'Expected exception message'",
-            $message
-        );
-        $this->assertNotContainsCompat(__FILE__, $message);
+        $this->assertContains('actual module name is "baz"', $message);
+        $this->assertNotContains("Exception 'RuntimeException' with message 'Expected exception message'", $message);
+        $this->assertNotContains(__FILE__, $message);
     }
 
     public function testAssertNotModuleName()
@@ -537,23 +534,5 @@ class AbstractControllerTestCaseTest extends AbstractHttpControllerTestCase
     {
         $this->dispatch(sprintf('/with-param/%s', $param));
         $this->assertResponseStatusCode(200);
-    }
-
-    private function assertContainsCompat($needle, $haystack)
-    {
-        if (method_exists($this, 'assertStringContainsString')) {
-            $this->assertStringContainsString($needle, $haystack);
-        } else {
-            $this->assertContains($needle, $haystack);
-        }
-    }
-
-    private function assertNotContainsCompat($needle, $haystack)
-    {
-        if (method_exists($this, 'assertStringNotContainsString')) {
-            $this->assertStringNotContainsString($needle, $haystack);
-        } else {
-            $this->assertNotContains($needle, $haystack);
-        }
     }
 }

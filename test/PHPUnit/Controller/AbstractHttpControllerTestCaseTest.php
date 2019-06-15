@@ -24,12 +24,12 @@ class AbstractHttpControllerTestCaseTest extends AbstractHttpControllerTestCase
 {
     use ExpectedExceptionTrait;
 
-    protected function setUpCompat()
+    public function setUp()
     {
         $this->setApplicationConfig(
             include __DIR__ . '/../../_files/application.config.php'
         );
-        parent::setUpCompat();
+        parent::setUp();
     }
 
     public function testUseOfRouter()

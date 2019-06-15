@@ -20,12 +20,12 @@ class AbstractConsoleControllerTestCaseTest extends AbstractConsoleControllerTes
 {
     use ExpectedExceptionTrait;
 
-    protected function setUpCompat()
+    protected function setUp()
     {
         $this->setApplicationConfig(
             include __DIR__ . '/../../_files/application.config.php'
         );
-        parent::setUpCompat();
+        parent::setUp();
     }
 
     public function testUseOfRouter()
